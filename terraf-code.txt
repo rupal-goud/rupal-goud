@@ -1,0 +1,92 @@
+provide access key
+provider "aws" {
+  region     = "ap-south-1"
+  access_key = "AKIA4HHE6HS22FYM7KWY"
+  secret_key = "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"
+}
+
+/*provider "aws" {
+    region     = "ap-south-1"
+}*/
+resource "aws_instance" "first_instance" {
+  
+  ami           = "ami-08ee6644906ff4d6c" # ap-south-1
+  //instance_type= "t2.micro"
+//  number_of_instances = 2
+ // instance_type = "var.ec2-variable"
+ instance_type = "var.ec2-variable"
+}
+
+#create s3 bucket
+
+resource "aws_s3_bucket" "rupal-bucket1" {
+  bucket = "rupal-s3-bucket1"
+  acl = "private"
+   versioning {
+    enabled = true
+  }
+
+
+ force_destroy = true
+}
+#variable declaration
+variable "named_folder"{
+
+  type=string
+  default="sourcetable"
+}
+
+variable "chng_named_folder"{
+
+  type=string
+  default="delete"
+}
+
+# Upload an object
+resource "aws_s3_bucket_object" "object-upload" {
+
+  bucket = "${aws_s3_bucket.rupal-bucket1.id}"
+  for_each = fileset ("C:\\Users\\rupal.goud\\Documents\\s3_upload","*")
+  key = "${var.named_folder}/${each.value}"
+  source = "C:\\Users\\rupal.goud\\Documents\\s3_upload\\${each.value}"
+  etag =filemd5 ("C:\\Users\\rupal.goud\\Documents\\s3_upload\\${each.value}")
+
+
+}
+#delete uploaded object
+resource "aws_s3_bucket_object" "object-del-upload" {
+
+  bucket = "${aws_s3_bucket.rupal-bucket1.id}"
+  for_each = fileset ("C:\\Users\\rupal.goud\\Documents\\s3_upload","*")
+  key = "${var.chng_named_folder}/${each.value}"
+  source = "C:\\Users\\rupal.goud\\Documents\\s3_upload\\${each.value}"
+  etag =filemd5 ("C:\\Users\\rupal.goud\\Documents\\s3_upload\\${each.value}")
+
+
+}
+
+#bucket-policy
+resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
+  bucket = aws_s3_bucket.rupal-bucket1.rupal-s3-bucket1
+  policy = data.aws_iam_policy_document.allow_access_from_another_account.json
+}
+
+data "aws_iam_policy_document" "allow_access_from_another_account" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["840146238645"]
+    }
+
+
+======================
+resource "aws_instance" "first_instance" {
+  
+  ami           = "ami-08ee6644906ff4d6c" # ap-south-1
+  //instance_type= "t2.micro"
+//  number_of_instances = 2
+ // instance_type = "var.ec2-variable"
+ instance_type = "var.ec2-variable"
+}
+
+
