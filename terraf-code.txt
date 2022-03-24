@@ -1,9 +1,7 @@
 provide access key
 provider "aws" {
   region     = "ap-south-1"
-  access_key = "AKIA4HHE6HS22FYM7KWY"
-  secret_key = "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"
-}
+  }
 
 /*provider "aws" {
     region     = "ap-south-1"
